@@ -1,0 +1,3 @@
+,TTFT,AutoAWQ vLLM
+Tesla T4,190.99ms,46.99ms
+A100,49.29ms,16.17ms
