@@ -1,6 +1,13 @@
-| **TTFT** | **AutoAWQ** | **vLLM** |
-| :--- | :--- | :--- |
-| **Tesla T4** | 190.99ms | 46.99ms |
-| **A100** | 49.29ms | 16.17ms |
+# Week 1. Benchmark
 
-- Model: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+| **Backend** | vLLM (awq)        | vLLM (awq_marlin) | torchao                   | huggingface       |
+| **Model**   | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | pytorch/Qwen3-8B-AWQ-INT4 | Qwen/Qwen3-8B-AWQ |
+| **TTFT**    | 51.78ms           | 7.51ms            |                  | |
+| **TPOT**    | 50.12ms           | 5.83ms            |                  | |
+
+- Device: A100-SXM4-80GB
+- vLLM
+  - torch 2.9.0
+  - vllm 0.12.0
+  - Python 3.12.3
+- torchao
