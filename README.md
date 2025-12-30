@@ -35,3 +35,18 @@
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
 - Self CPU time total: 3.392s
 - Self CUDA time total: 117.495ms
+
+## NSight Compute Profiling
+- Summary
+  - Mio throttle Stalls (Est. Speedup: 55.00%)
+    - On average, each warp of this kernel spends 11.0 cycles being stalled waiting for the MIO (memory input/output) instruction queue to be not full. This stall reason is high in cases of extreme utilization of the MIO pipelines, which include special math instructions, dynamic branches, as well as shared memory instructions. When caused by shared memory accesses, trying to use fewer but wider loads can reduce pipeline pressure. This stall type represents about 60.7% of the total average of 18.1 cycles between issuing two instructions.
+  - ncu에서는 quantized weight를 load하는 부분이 병목이 된다고 지적.
+  - ```python
+    b = tl.load(b_ptrs, mask=masks_b)
+    ```
+
+
+## Triton Debugging
+- tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
+- BLOCK_SIZE K: 32
+- BLOCK_SIZE N: 32
