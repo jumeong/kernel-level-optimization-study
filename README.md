@@ -19,6 +19,7 @@
 
 
 # Week 2. Prefill Profiling
+## Pytorch Profiler
 - Device: Colab T4
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
                                                    Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
@@ -33,13 +34,8 @@
 
 
 ## NSight Compute Profiling
-- Summary
-  - Mio throttle Stalls (Est. Speedup: 55.00%)
-    - On average, each warp of this kernel spends 11.0 cycles being stalled waiting for the MIO (memory input/output) instruction queue to be not full. This stall reason is high in cases of extreme utilization of the MIO pipelines, which include special math instructions, dynamic branches, as well as shared memory instructions. When caused by shared memory accesses, trying to use fewer but wider loads can reduce pipeline pressure. This stall type represents about 60.7% of the total average of 18.1 cycles between issuing two instructions.
-  - ncu에서는 quantized weight를 load하는 부분이 병목이 된다고 지적.
-  - ```python
-    b = tl.load(b_ptrs, mask=masks_b)
-    ```
+- Roofline
+  - <img width="2000" height="363" alt="image" src="https://github.com/user-attachments/assets/7497b928-6bd9-4851-a907-62bf6b20f330" />
 
 
 ## Triton Debugging
