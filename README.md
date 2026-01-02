@@ -46,9 +46,10 @@
 ### Details
 <img width="2585" height="186" alt="image" src="https://github.com/user-attachments/assets/369ef9b6-dd46-4ae7-a1be-e75c87557875" />
 
-```python gemm.py:200
+```python
 a = tl.load(a_ptrs, mask=masks_a)
 ```
+위 코드에서 Uncoalesced Shared Access가 많이 발생! 이에 따라, BLOCK_SIZE_K를 32에서 64로 변경해보기로
 
 ## Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
