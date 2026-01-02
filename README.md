@@ -40,9 +40,10 @@
 
 ## NSight Compute Profiling
 
-# Summary
+### Summary
 <img width="2608" height="291" alt="image" src="https://github.com/user-attachments/assets/07979a74-0883-4de1-b00b-140590393774" />
-# Details
+
+### Details
 <img width="2585" height="186" alt="image" src="https://github.com/user-attachments/assets/369ef9b6-dd46-4ae7-a1be-e75c87557875" />
 
 ```python gemm.py:200
