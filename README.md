@@ -38,20 +38,70 @@
 - Self CUDA time total: 1.666s
 
 
+## Triton Autotune
+```python
+@triton.autotune(
+        configs=[
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 32, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=1,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 32, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=2,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 64, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=1,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 64, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=2,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 64, "BLOCK_SIZE_N": 64, "BLOCK_SIZE_K": 64},
+                num_warps=4,
+                num_stages=1,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 64, "BLOCK_SIZE_N": 64, "BLOCK_SIZE_K": 64},
+                num_warps=4,
+                num_stages=2,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 128, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=1,
+                ),
+            triton.Config(
+                {"BLOCK_SIZE_M": 32, "BLOCK_SIZE_N": 128, "BLOCK_SIZE_K": 32},
+                num_warps=4,
+                num_stages=2,
+                ),
+            ],
+        key=["M", "N", "K"],
+        )
+```
+
 ## NSight Compute Profiling
 
-### Summary
+### Original Kernel 
+
+#### Summary
 <img width="2608" height="291" alt="image" src="https://github.com/user-attachments/assets/07979a74-0883-4de1-b00b-140590393774" />
 
-### Details
+#### Details
 <img width="2585" height="186" alt="image" src="https://github.com/user-attachments/assets/369ef9b6-dd46-4ae7-a1be-e75c87557875" />
 
-```python
-a = tl.load(a_ptrs, mask=masks_a)
-```
-위 코드에서 Uncoalesced Shared Access가 많이 발생! 이에 따라, BLOCK_SIZE_K를 32에서 64로 변경해보기로
+### BLOCK_SIZE_N 64 Kernel
 
-## Triton Debugging
+### BLOCK_SIZE_N 128 Kernel
+
+### Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
 - BLOCK_SIZE K: 32
 - BLOCK_SIZE N: 32
