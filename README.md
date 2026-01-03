@@ -87,6 +87,8 @@
         )
 ```
 
+위 조합으로 실험해봤을 때, BLOCK_SIZE_N이 커질수록 더 나은 config인 것이라고 triton autotune이 출력
+
 ## NSight Compute Profiling
 
 ### Original Kernel 
