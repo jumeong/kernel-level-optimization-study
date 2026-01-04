@@ -19,7 +19,7 @@
 
 
 # Week 2. Prefill Profiling
-## Pytorch Profiler
+## Pytorch Profiler based on Original Kernel
 - Device: Colab T4
 - SeqLen: 256
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
@@ -86,26 +86,22 @@
         key=["M", "N", "K"],
         )
 ```
-- 위 조합으로 실험해봤을 때, BLOCK_SIZE_N이 커질수록 더 나은 config인 것이라고 triton autotune이 출력
+- 위 조합으로 실험해봤을 때, BLOCK_SIZE_N이 커질수록 더 나은 config라고 triton autotune이 출력
 
 ## NSight Compute Profiling
+### Summary
+### Compute Workload Analysis
+| **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
+|:----------------------------------------|:------------------|:------------------|:------------------|
+| **Executed Ipc Elapsed [inst/cycle]**   | 0.92              | 1.38              | |
+| **Executed Ipc Active [inst/cycle]**    | 0.92              | 1.39              | |
+| **Issued Ipc Active [inst/cycle]**      | 0.92              | 1.39              | |
+| **SM Busy [%]**                         | 23.03             | 34.74             | |
+| **Issues Slots Busy [%]                 | 23.03             | 34.74             | |
 
-### Original Kernel 
 
-- 써놓을 만한 것
-  - summary
-  - Compute Workload Analysis
-  - 
-  - occupancy
-#### Summary
-<img width="2608" height="291" alt="image" src="https://github.com/user-attachments/assets/07979a74-0883-4de1-b00b-140590393774" />
-
-#### Details
-<img width="2585" height="186" alt="image" src="https://github.com/user-attachments/assets/369ef9b6-dd46-4ae7-a1be-e75c87557875" />
-
-### BLOCK_SIZE_N 64 Kernel
-
-### BLOCK_SIZE_N 128 Kernel
+### Memory Workload Analysis
+### Occupancy
 
 ### Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
