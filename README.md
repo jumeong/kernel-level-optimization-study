@@ -90,6 +90,11 @@
 
 ## NSight Compute Profiling
 ### Summary
+| **BLOCK_SIZE_N**                             | 32 (Original)     | 64                | 128               |
+|:---------------------------------------------|:------------------|:------------------|:------------------|
+| **Uncoalesced Shared Accesses Est. Speedup** | 30.72%            | 27.82%            |              |
+| **Uncoalesced Global Accesses Est. Speedup** | 17.49%            | 9.22%             |              |
+
 ### Compute Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
 |:----------------------------------------|:------------------|:------------------|:------------------|
@@ -97,13 +102,8 @@
 | **Executed Ipc Active [inst/cycle]**    | 0.92              | 1.39              | |
 | **Issued Ipc Active [inst/cycle]**      | 0.92              | 1.39              | |
 | **SM Busy [%]**                         | 23.03             | 34.74             | |
-| **Issues Slots Busy [%]                 | 23.03             | 34.74             | |
+| **Issues Slots Busy [%]**               | 23.03             | 34.74             | |
 
-
-### Memory Workload Analysis
-### Occupancy
-
-### Triton Debugging
-- tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
+- Uncoalesced Global Accesses를 줄이면서 연산 유닛들이 기다리는 비중이 줄어 IPC가 상승하는 효과가 나타난 것으로 보임print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
 - BLOCK_SIZE K: 32
 - BLOCK_SIZE N: 32
