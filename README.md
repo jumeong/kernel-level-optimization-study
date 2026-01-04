@@ -105,5 +105,8 @@
 | **Issues Slots Busy [%]**               | 23.03             | 34.74             | |
 
 - Uncoalesced Global Accesses를 줄이면서 연산 유닛들이 기다리는 비중이 줄어 IPC가 상승하는 효과가 나타난 것으로 보임print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
-- BLOCK_SIZE K: 32
-- BLOCK_SIZE N: 32
+
+## Triton Debugging
+- tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
+  - BLOCK_SIZE K: 32
+  - BLOCK_SIZE N: 32
