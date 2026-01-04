@@ -92,19 +92,29 @@
 ### Summary
 | **BLOCK_SIZE_N**                             | 32 (Original)     | 64                | 128               |
 |:---------------------------------------------|:------------------|:------------------|:------------------|
-| **Uncoalesced Shared Accesses Est. Speedup** | 30.72%            | 27.82%            |              |
-| **Uncoalesced Global Accesses Est. Speedup** | 17.49%            | 9.22%             |              |
+| **Uncoalesced Shared Accesses Est. Speedup** | 30.72%            | 27.82%            | Not Detected      |
+| **Uncoalesced Global Accesses Est. Speedup** | 17.49%            | 9.22%             | 14.54%            |
+- 특이하게, BLOCK_SIZE_N 128에서는 Theoretical Occupancy가 25%로 낮아짐.
+- 왜 이렇게 된건지 분석 필요.
+- 그럼에도 Cycle은 가장 빨라서 최적화 여지가 더 있음을 시사함.
 
 ### Compute Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
 |:----------------------------------------|:------------------|:------------------|:------------------|
-| **Executed Ipc Elapsed [inst/cycle]**   | 0.92              | 1.38              | |
-| **Executed Ipc Active [inst/cycle]**    | 0.92              | 1.39              | |
-| **Issued Ipc Active [inst/cycle]**      | 0.92              | 1.39              | |
-| **SM Busy [%]**                         | 23.03             | 34.74             | |
-| **Issues Slots Busy [%]**               | 23.03             | 34.74             | |
+| **Executed Ipc Elapsed [inst/cycle]**   | 0.92              | 1.38              | 1.35              |
+| **Executed Ipc Active [inst/cycle]**    | 0.92              | 1.39              | 1.37              |
+| **Issued Ipc Active [inst/cycle]**      | 0.92              | 1.39              | 1.37              |
+| **SM Busy [%]**                         | 23.03             | 34.74             | 35.47             |
+| **Issues Slots Busy [%]**               | 23.03             | 34.74             | 34.19             |
+- Uncoalesced Global Accesses를 줄이면서 연산 유닛들이 기다리는 비중이 줄어 IPC가 상승하는 효과가 나타난 것으로 보임
 
-- Uncoalesced Global Accesses를 줄이면서 연산 유닛들이 기다리는 비중이 줄어 IPC가 상승하는 효과가 나타난 것으로 보임print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
+### Memory Workload Analysis
+| **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
+|:----------------------------------------|:------------------|:------------------|:------------------|
+| **Memory Throughput [Gbyte/s]**         | 8.24              | 11.26             | 13.92             |
+| **L1/TEX Hit Rate [%]**                 | 7.37              | 18.01             | 3.02              |
+| **L2 Hit Rate [%]**                     | 95.94             | 93.19             | 88.74             |
+- ㅁㅁ
 
 ## Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
