@@ -1,5 +1,4 @@
 # Week 1. Benchmark
-
 | **Backend** | vLLM (awq)        | vLLM (awq_marlin) | transformers      |
 |:------------|:------------------|:------------------|:------------------|
 | **Model**   | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ |
@@ -88,6 +87,8 @@
 ```
 - 위 조합으로 실험해봤을 때, BLOCK_SIZE_N이 커질수록 더 나은 config라고 triton autotune이 출력
 
+
+
 ## NSight Compute Profiling
 ### Summary
 | **BLOCK_SIZE_N**                             | 32 (Original)     | 64                | 128               |
@@ -97,6 +98,26 @@
 - 특이하게, BLOCK_SIZE_N 128에서는 Theoretical Occupancy가 25%로 낮아짐.
 - 왜 이렇게 된건지 분석 필요.
 - 그럼에도 Cycle은 가장 빨라서 최적화 여지가 더 있음을 시사함.
+
+
+
+
+### Uncoalesced Global Accesses
+- BLOCK_SIZE_N 64와 128에서 Uncoalesced Global Accesses가 감소한 이유
+  - ```python
+    b = tl.load(b_ptrs, mask=masks_b)
+    ```
+    의 Access Size가 32에서 64로 됨
+  - 즉, LDG.E.SYS로 컴파일되던 것이 LDG.E.64.SYS로 컴파일됨
+  - BLOCK_SIZE_N이 32일 때는 Vectorized Load로 동작하지 않다가 64와 128에서 Vectorized Load로 동작한듯.
+
+
+
+
+### Uncoalesced Shared Accesses
+
+
+
 
 ### Compute Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
@@ -108,13 +129,16 @@
 | **Issues Slots Busy [%]**               | 23.03             | 34.74             | 34.19             |
 - Uncoalesced Global Accesses를 줄이면서 연산 유닛들이 기다리는 비중이 줄어 IPC가 상승하는 효과가 나타난 것으로 보임
 
+
+
 ### Memory Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
 |:----------------------------------------|:------------------|:------------------|:------------------|
 | **Memory Throughput [Gbyte/s]**         | 8.24              | 11.26             | 13.92             |
 | **L1/TEX Hit Rate [%]**                 | 7.37              | 18.01             | 3.02              |
 | **L2 Hit Rate [%]**                     | 95.94             | 93.19             | 88.74             |
-- BLOCK_SIZE_N 128에서 L1 Hit Rate가 뚝 떨어졌는데도
+
+
 
 ## Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
