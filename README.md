@@ -114,7 +114,7 @@
 | **Memory Throughput [Gbyte/s]**         | 8.24              | 11.26             | 13.92             |
 | **L1/TEX Hit Rate [%]**                 | 7.37              | 18.01             | 3.02              |
 | **L2 Hit Rate [%]**                     | 95.94             | 93.19             | 88.74             |
-- ㅁㅁ
+- BLOCK_SIZE_N 128에서 L1 Hit Rate가 뚝 떨어졌는데도
 
 ## Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
