@@ -92,6 +92,11 @@
 
 ### Original Kernel 
 
+- 써놓을 만한 것
+  - summary
+  - Compute Workload Analysis
+  - 
+  - occupancy
 #### Summary
 <img width="2608" height="291" alt="image" src="https://github.com/user-attachments/assets/07979a74-0883-4de1-b00b-140590393774" />
 
