@@ -115,7 +115,9 @@
 
 
 ### Uncoalesced Shared Accesses
-
+- compile 결과
+- 메모리 컨트롤러 입장
+- 트랜잭션 횟수 감소
 
 
 
@@ -138,6 +140,9 @@
 | **L1/TEX Hit Rate [%]**                 | 7.37              | 18.01             | 3.02              |
 | **L2 Hit Rate [%]**                     | 95.94             | 93.19             | 88.74             |
 
+- Coalescing 효율이 좋아져서 Memory Throughput이 늘어나는 것으로 보임
+- L1 Hit Rate는 왜 줄었을까?
+  - dynamic shared memory per block
 
 
 ## Triton Debugging
