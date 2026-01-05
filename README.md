@@ -116,10 +116,10 @@
 
 ### Uncoalesced Shared Accesses
 - a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 32
-  <img width="530" height="864" alt="image" src="https://github.com/user-attachments/assets/8c209c98-2b36-4b95-9d9c-f7c6a93746bf" />
+<img width="530" height="864" alt="image" src="https://github.com/user-attachments/assets/8c209c98-2b36-4b95-9d9c-f7c6a93746bf" />
   
 - a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 128
-  <img width="547" height="913" alt="image" src="https://github.com/user-attachments/assets/3443ec57-2683-4bfd-ae56-8f0ad3ed4234" />
+<img width="547" height="913" alt="image" src="https://github.com/user-attachments/assets/3443ec57-2683-4bfd-ae56-8f0ad3ed4234" />
   
 - 사실 BLOCK_SIZE_N은 A를 로드하는 것에 영향을 미치지 않아야 할 것 같은데 왜 컴파일이 다르게 됐을까? (A는 M by K이므로)
   - BLOCK_SIZE_N이 4배가 되었으므로 한 커널이 담당하는 연산량이 4배가 된 것.
