@@ -116,7 +116,7 @@
 
 ### Uncoalesced Shared Accesses
 - a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 32
-  <img width="653" height="938" alt="image" src="https://github.com/user-attachments/assets/b1bddda5-91d2-4e70-b930-8b949c9028cd" />
+  <img width="530" height="864" alt="image" src="https://github.com/user-attachments/assets/8c209c98-2b36-4b95-9d9c-f7c6a93746bf" />
 
 - a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 128
   <img width="547" height="913" alt="image" src="https://github.com/user-attachments/assets/3443ec57-2683-4bfd-ae56-8f0ad3ed4234" />
