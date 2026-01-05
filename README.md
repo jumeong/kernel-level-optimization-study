@@ -186,7 +186,22 @@
 
 
 # Week 3. Result
-| **Backend** | vLLM (awq)        | vLLM (awq_marlin) | transformers      | transformers + Kernel Parameter Fix |
-|:------------|:------------------|:------------------|:------------------|:------------------------------------|
-| **Model**   | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ                   |
-| **TTFT**    | 51.78ms           | 7.51ms            | 95.41ms           |                                     |
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg     Self CUDA   Self CUDA %    CUDA total  CUDA time avg       CPU Mem  Self CPU Mem      CUDA Mem  Self CUDA Mem    # of Calls  
+                                     WQLinearMMFunction        68.82%        3.909s        69.55%        3.951s      15.678ms     985.292ms        95.33%     992.536ms       3.939ms           0 B           0 B     684.00 MB           0 B           252  
+                                        awq_gemm_kernel         0.00%       0.000us         0.00%       0.000us       0.000us     985.292ms        95.33%     985.292ms       3.910ms           0 B           0 B           0 B           0 B           252  
+                                  Lazy Function Loading         0.09%       5.093ms         0.09%       5.093ms      37.729us     783.029ms        75.76%     783.029ms       5.800ms           0 B           0 B           0 B           0 B           135  
+                       Runtime Triggered Module Loading        13.90%     789.599ms        13.90%     789.599ms      17.165ms      58.364ms         5.65%      58.364ms       1.269ms           0 B           0 B           0 B           0 B            46  
+                                              aten::mul         0.31%      17.383ms         5.75%     326.763ms     692.294us      11.986ms         1.16%      14.559ms      30.845us           0 B           0 B       1.08 GB       1.08 GB           472  
+                                            aten::copy_         0.13%       7.469ms         0.65%      37.067ms      92.437us       8.581ms         0.83%       8.633ms      21.529us           0 B           0 B           0 B           0 B           401  
+                                               aten::mm         1.91%     108.481ms         9.07%     515.133ms     515.133ms       7.204ms         0.70%     842.861ms     842.861ms           0 B           0 B      74.19 MB      74.19 MB             1  
+         turing_fp16_s1688gemm_fp16_256x128_ldg8_f2f_tn         0.00%       0.000us         0.00%       0.000us       0.000us       7.204ms         0.70%       7.204ms       7.204ms           0 B           0 B           0 B           0 B             1  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+- Self CPU time total: 5.681s
+- Self CUDA time total: 1.034s
+- awq_gemm_kernel의 Self CUDA 시간이 700ms 정도 단축된 것으로 확인
+
+## Comment
+- Decode Stage도 분석하면 좋았을 듯.
+- 이번엔 Kernel Parameter 수정에 그쳤지만, 추후 더 복잡한 Kernel을 Optimization할 때 코드 자체를 수정해보는 기회가 있으면 좋을 듯.
+
