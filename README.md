@@ -115,9 +115,16 @@
 
 
 ### Uncoalesced Shared Accesses
-- compile 결과
-- 메모리 컨트롤러 입장
-- 트랜잭션 횟수 감소
+- a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 32
+  <img width="653" height="938" alt="image" src="https://github.com/user-attachments/assets/b1bddda5-91d2-4e70-b930-8b949c9028cd" />
+
+- a = tl.load(a_ptrs, mask=masks_a) SASS @ BLOCK_SIZE_N 128
+  <img width="547" height="913" alt="image" src="https://github.com/user-attachments/assets/3443ec57-2683-4bfd-ae56-8f0ad3ed4234" />
+- 사실 BLOCK_SIZE_N은 A를 로드하는 것에 영향을 미치지 않아야 할 것 같은데 왜 컴파일이 다르게 됐을까? (A는 M by K이므로)
+  - BLOCK_SIZE_N이 4배가 되었으므로 한 커널이 담당하는 연산량이 4배가 된 것.
+  - 즉, BLOCK_SIZE_N이 32일 때는 FMA 연산이 빨리 끝나버리니까 Input Tensor를 퍼나르기 바빴는데, BLOCK_SIZE_N이 128이 되니까 Load/Store Unit 쪽에 여유가 생긴 것으로 보임
+  - 전체 Warp가 여유롭게 퍼나를 수 있는 상황이 되어 Load 사이사이에 다른 연산이 섞여있다거나, Access Size가 다른 Load가 섞여있지 않고 짝이 맞게 컴파일됨
+  - 이는 Memory Controller 입장에서 Coalesced Accesses 처리를 할 수 잇게 되고 결과적으로, Shared Memory와의 Transaction 횟수가 감소했을 것으로 예상
 
 
 
