@@ -17,6 +17,8 @@
   - Python 3.12.3
 
 
+
+
 # Week 2. Prefill Profiling
 ## Pytorch Profiler based on Original Kernel
 - Device: Colab T4
@@ -35,6 +37,8 @@
 -------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
 - Self CPU time total: 6.330s
 - Self CUDA time total: 1.666s
+
+
 
 
 ## Triton Autotune
@@ -89,15 +93,13 @@
 
 
 
+
 ## NSight Compute Profiling
 ### Summary
 | **BLOCK_SIZE_N**                             | 32 (Original)     | 64                | 128               |
 |:---------------------------------------------|:------------------|:------------------|:------------------|
 | **Uncoalesced Shared Accesses Est. Speedup** | 30.72%            | 27.82%            | Not Detected      |
 | **Uncoalesced Global Accesses Est. Speedup** | 17.49%            | 9.22%             | 14.54%            |
-- 특이하게, BLOCK_SIZE_N 128에서는 Theoretical Occupancy가 25%로 낮아짐.
-- 왜 이렇게 된건지 분석 필요.
-- 그럼에도 Cycle은 가장 빨라서 최적화 여지가 더 있음을 시사함.
 
 
 
@@ -129,6 +131,7 @@
 
 
 
+
 ### Compute Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
 |:----------------------------------------|:------------------|:------------------|:------------------|
@@ -141,19 +144,49 @@
 
 
 
+
 ### Memory Workload Analysis
 | **BLOCK_SIZE_N**                        | 32 (Original)     | 64                | 128               |
 |:----------------------------------------|:------------------|:------------------|:------------------|
 | **Memory Throughput [Gbyte/s]**         | 8.24              | 11.26             | 13.92             |
 | **L1/TEX Hit Rate [%]**                 | 7.37              | 18.01             | 3.02              |
 | **L2 Hit Rate [%]**                     | 95.94             | 93.19             | 88.74             |
-
 - Coalescing 효율이 좋아져서 Memory Throughput이 늘어나는 것으로 보임
-- L1 Hit Rate는 왜 줄었을까?
-  - dynamic shared memory per block
+- BLOCK_SIZE_N이 128일 때, L1 Hit Rate는 왜 급격하게 줄었을까?
+  - Launch Statistics를 보면 Dynamic Shared Memory Per Block이 4.10에서 10.24로 증가
+  - L1 Cache와 Shared Memory가 Unified Memory 형태로 공유하기 때문에 Shared Memory가 늘어난 만큼 L1 Cache가 줄어서 Hit Rate가 줄었을 것으로 추정
+
+
+ 
+
+### Occupancy
+| **BLOCK_SIZE_N**                           | 32 (Original)     | 64                | 128               |
+|:-------------------------------------------|:------------------|:------------------|:------------------|
+| **Theoretical Occupancy [%]**              | 87.50             | 100               | 25                |
+| **Theoretical Active Warps per SM [warp]** | 28                | 32                | 8                 |
+| **Achieved Occupancy [%]**                 | 86.24             | 96.98             | 24.67             |
+| **Achieved Active Warps Per SM [warp]**    | 27.60             | 31.03             | 7.89              |
+| **Block Limit Registers [block]**          | 7                 | 8                 | 2                 |
+| **Block Limit Shared Mem [block]**         | 8                 | 10                | 3                 |
+| **Block Limit Warps [block]**              | 8                 | 8                 | 8                 |
+| **Block Limit SM [block]**                 | 16                | 16                | 16                |
+- BLOCK_SIZE_N 128을 처리하기 위해 점유하는 레지스터가 많아지면서 실행가능한 Warp 수가 급감
+- Warp 수가 많은 게 능사가 아니라는 것을 보여주는 듯. Warp 수가 많아봐야 Stall하고 있으면 의미 X
+
+
+
 
 
 ## Triton Debugging
 - tl.static_print은 컴파일 시점에 tl.constexpr 변수의 값을 찍어준다.
   - BLOCK_SIZE K: 32
   - BLOCK_SIZE N: 32
+ 
+
+
+
+# Week 3. Result
+| **Backend** | vLLM (awq)        | vLLM (awq_marlin) | transformers      | transformers + Kernel Parameter Fix |
+|:------------|:------------------|:------------------|:------------------|:------------------------------------|
+| **Model**   | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ | Qwen/Qwen3-8B-AWQ                   |
+| **TTFT**    | 51.78ms           | 7.51ms            | 95.41ms           |                                     |
